@@ -109,6 +109,8 @@ with open(get_file_name('tra_Y_tr'), 'rb') as f:
 with open(get_file_name('tra_adj_mat'), 'rb') as f:
     tra_adj_mat = pickle.load(f)
 
+location_index = 0
+traffic_flow_series = tra_Y_tr[location_index]
 # plt.figure(figsize=(10, 5))
 # plt.plot(traffic_flow_series)
 # plt.title(f"Traffic Flow Over Time at Location {location_index + 1}")
@@ -117,13 +119,19 @@ with open(get_file_name('tra_adj_mat'), 'rb') as f:
 # plt.show()
 #
 # # Step 2: Autocorrelation and Partial Autocorrelation
-# plot_acf(traffic_flow_series, lags=50)
-# plt.title(f"Autocorrelation Function (ACF) for Location {location_index + 1}")
-# plt.show()
+plot_acf(traffic_flow_series, lags=50)
+plt.title(f"Autocorrelation Function (ACF) for Location {location_index + 1}")
+plt.legend()
+plt.show()
 #
-# plot_pacf(traffic_flow_series, lags=50)
-# plt.title(f"Partial Autocorrelation Function (PACF) for Location {location_index + 1}")
-# plt.show()
+plot_pacf(traffic_flow_series, lags=50)
+plt.title(f"Partial Autocorrelation Function (PACF) for Location {location_index + 1}")
+plt.show()
+
+plt.hist(traffic_flow_series, density=False, bins=50)
+plt.xlabel('Traffic Flow')
+plt.ylabel('Count')
+plt.show()
 
 location_index = 0
 output_data = tra_Y_tr[location_index, :]
@@ -131,7 +139,6 @@ output_data = tra_Y_tr[location_index, :]
 input_data: ndarray = tra_X_tr[0]
 input_data_size = len(input_data)
 feature_list = np.empty(shape=(input_data_size, 48))
-
 
 for i in range(input_data_size):
     # we need data for all timestamps
@@ -153,14 +160,13 @@ for item in feature_split:
     print(f"Training MAE: {mae}")
     print(f"Training RMSE: {rmse}")
 
-    with open(f'data/model{item.start+1}.pkl', 'wb') as _:
+    with open(f'data/model{item.start + 1}.pkl', 'wb') as _:
         pickle.dump(model, _)
 
 model = LinearRegression()
 x_train = feature_list
 y_train = output_data
 model.fit(x_train, y_train)
-
 
 y_train_pred = model.predict(x_train)
 mae = mean_absolute_error(y_train, y_train_pred)
@@ -171,8 +177,6 @@ print(f"Training RMSE: {rmse}")
 # save
 with open('data/model.pkl', 'wb') as _:
     pickle.dump(model, _)
-
-
 
 # Guide:
 # In this phase, you should further explore the time-series nature of the data by generating more visualizations.

@@ -53,6 +53,7 @@ if __name__ == '__main__':
     2. Historical Data as weighted average
     3. Time & Date as a single feature i.e. 0-24 as 0-1 & weekdays as 0-1
     '''
+    print('Reverse Weighted Average Feature')
     # Reverse Average
     weights = [i for i in range(10)]
     features = feature_list[:, 0:10]
@@ -60,6 +61,7 @@ if __name__ == '__main__':
     x_train = weighted_average[:, None]
     create_regression_model(x_train, y_train, 'reverse_weighted_average')
 
+    print('Weighted Average Feature')
     # Weighted Average
     weights = [10 - i for i in range(10)]
     features = feature_list[:, 0:10]
@@ -67,6 +69,7 @@ if __name__ == '__main__':
     x_train = weighted_average[:, None]
     create_regression_model(x_train, y_train, 'weighted_average')
 
+    print('Average Feature')
     # Average
     weights = [1 for i in range(10)]
     features = feature_list[:, 0:10]
@@ -75,6 +78,7 @@ if __name__ == '__main__':
     create_regression_model(x_train, y_train, 'average')
 
 
+    print('Week Feature')
     # Week on linear scale
     features = feature_list[:, slice(10, 17)]
     weighted_average_week = features.argmax(axis=1)
@@ -82,6 +86,7 @@ if __name__ == '__main__':
     x_train = weighted_average_week[:, None]
     create_regression_model(x_train, y_train, 'week')
 
+    print('Day Feature')
     # Day on a linear scale
     weights = [i for i in range(24)]
     features = feature_list[:, 16:40]
@@ -89,7 +94,8 @@ if __name__ == '__main__':
     x_train = weighted_average_day[:, None]
     create_regression_model(x_train, y_train, 'day')
 
-    #Final
+    print('Final Model')
+    #Final Model
     weights = [i for i in range(24)]
     x_train = feature_list[:, 10:40] + np.array([weighted_average]).transpose()
     create_regression_model(x_train, y_train, 'time_and_average')
